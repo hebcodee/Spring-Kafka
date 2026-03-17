@@ -64,4 +64,8 @@ public class AgenciaService {
         Log.info("A agência com CNPJ " + agencia.getCnpj() + " foi alterada");
         return agenciaRepository.update("nome = ?1, razaoSocial = ?2, cnpj = ?3 where id = ?4", agencia.getNome(), agencia.getRazaoSocial(), agencia.getCnpj(), agencia.getId()).replaceWithVoid();
     }
+
+    public Uni<Agencia> buscarPorCnpj(String cnpj) {
+        return agenciaRepository.findByCnpj(cnpj);
+    }
 }
