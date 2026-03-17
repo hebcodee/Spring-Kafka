@@ -16,6 +16,7 @@ public class SituacaoCadastralService {
 
     private final Emitter<Audit> emitter;
 
+
     public SituacaoCadastralService(SituacaoCadastralRepository situacaoCadastralRepository, @Channel("notificacoes") Emitter<Audit> emitter) {
         this.situacaoCadastralRepository = situacaoCadastralRepository;
         this.emitter = emitter;
