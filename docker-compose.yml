@@ -1,0 +1,25 @@
+services:
+  postgres-db-alura:
+    image: postgres:14
+    container_name: postgres-db-alura-container
+    environment:
+      - POSTGRES_USER=joao
+      - POSTGRES_PASSWORD=joao
+      - POSTGRES_DB=agencia
+    ports:
+      - 5432:5432
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  rabbitmq:
+    image: rabbitmq:3.10-management
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+volumes:
+  postgres_data:
+    driver: local
