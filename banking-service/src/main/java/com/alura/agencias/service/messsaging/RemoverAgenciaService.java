@@ -1,11 +1,9 @@
 package com.alura.agencias.service.messsaging;
 
 
-import com.alura.agencias.domain.Agencia;
+import br.com.alura.Agencia;
 import com.alura.agencias.domain.messaging.AgenciaMensagem;
-import com.alura.agencias.repository.AgenciaRepository;
 import com.alura.agencias.service.AgenciaService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;
@@ -18,19 +16,22 @@ import java.io.DataInput;
 public class RemoverAgenciaService {
 
     private final AgenciaService agenciaService;
-    private final ObjectMapper objectMapper;
 
     public RemoverAgenciaService(AgenciaService agenciaService) {
         this.agenciaService = agenciaService;
-        objectMapper = new ObjectMapper();
     }
 
     @WithTransaction
     @Incoming("remover-agencia-channel")
-    public Uni<Void> consumirMensagem(String mensagem) {
+    public Uni<Void> consumirMensagem(Agencia mensagem) {
         try {
             Log.info(mensagem);
-            AgenciaMensagem agenciaMensagem = objectMapper.readValue(mensagem, AgenciaMensagem.class);
+            AgenciaMensagem agenciaMensagem = new AgenciaMensagem(
+                    mensagem.getNome(),
+                    mensagem.getRazaoSocial(),
+                    mensagem.getCnpj(),
+                    mensagem.getSituacaoCadastral()
+            );
             return agenciaService.buscarPorCnpj(agenciaMensagem.getCnpj())
                     .onItem().ifNotNull().transformToUni(agencia ->
                         agenciaService.deletar(agencia.getId())
