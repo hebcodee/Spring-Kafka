@@ -18,8 +18,7 @@ public class SituacaoCadastralService {
     private final SituacaoCadastralRepository situacaoCadastralRepository;
 
     private final Emitter<Audit> emitter;
-    private final MutinyEmitter<String> mutinyEmitter;
-    private final ObjectMapper objectMapper;
+    private final MutinyEmitter<br.com.alura.Agencia> mutinyEmitter;
 
 
     public SituacaoCadastralService(
@@ -30,7 +29,6 @@ public class SituacaoCadastralService {
         this.situacaoCadastralRepository = situacaoCadastralRepository;
         this.emitter = emitter;
         this.mutinyEmitter = mutinyEmitter;
-        this.objectMapper = new ObjectMapper();
     }
 
     @WithTransaction
@@ -45,7 +43,8 @@ public class SituacaoCadastralService {
                 .call (() -> {
                     try{
                         if (agencia.getSituacaoCadastral().equals("INATIVO")) {
-                            return mutinyEmitter.send(objectMapper.writeValueAsString(agencia));
+                            br.com.alura.Agencia agenciaConvertida = new br.com.alura.Agencia(agencia.getNome(), agencia.getRazaoSocial(), agencia.getCnpj(), agencia.getSituacaoCadastral());
+                            return mutinyEmitter.send(agenciaConvertida);
                         }
                         return Uni.createFrom().voidItem();
                     } catch (JsonProcessingException e) {
